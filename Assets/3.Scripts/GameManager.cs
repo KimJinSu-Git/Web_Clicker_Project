@@ -6,12 +6,16 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int mGoldPerClick = 1;
     [SerializeField] private int mMaxDailyGold = 2000;
     
+    [SerializeField] private GoldPresenter mGoldPresenter; 
+    
     public int GoldPerClick => mGoldPerClick; 
     public int MaxDailyGold => mMaxDailyGold;
     
     public static GameManager Instance { get; private set; } 
     
     private int _currentGold;
+    
+    public int CurrentGold => _currentGold; 
     
     private void Awake()
     {
@@ -34,6 +38,14 @@ public class GameManager : MonoBehaviour
     public void AddGold()
     {
         _currentGold += mGoldPerClick;
+        
+        Debug.Log($"Gold 획득 완료. 현재 Gold : {_currentGold}");
+        
+        if (mGoldPresenter != null)
+        {
+            mGoldPresenter.UpdateGoldText(_currentGold);
+        }
+        
         // TODO: UI 업데이트 로직 호출
     }
 }

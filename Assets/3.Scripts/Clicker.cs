@@ -8,7 +8,7 @@ public class Clicker : MonoBehaviour, IPointerDownHandler
     [Tooltip("Gold 증가 로직에 접근하기 위한 GameManager의 인스턴스를 사용합니다.")]
     private GameManager mGameManager; 
         
-    private void Awake()
+    private void Start()
     {
         if (GameManager.Instance == null)
         {
