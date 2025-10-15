@@ -21,7 +21,7 @@ public class GoldPresenter : MonoBehaviour
     {
         if (mGoldText != null)
         {
-            mGoldText.text = $"Gold : {newGoldValue:N0}"; // N0은 천 단위 구분 기호를 추가해주는 역할 (ex: 1,000)
+            mGoldText.text = $"Goldd : {newGoldValue:N0}"; // N0은 천 단위 구분 기호를 추가해주는 역할 (ex: 1,000)
         }
     }
     

@@ -16,6 +16,9 @@ public class GameManager : MonoBehaviour
     private int _currentGold;
     private int _dailyEarnedGold;
     
+    private const string GOLD_KEY = "CurrentGold";
+    private const string DAILY_GOLD_KEY = "DailyEarnedGold";
+    
     public int CurrentGold => _currentGold; 
     public int DailyEarnedGold => _dailyEarnedGold;
     
@@ -33,8 +36,8 @@ public class GameManager : MonoBehaviour
     private void InitializeGameData()
     {
         // TODO :: 임시 초기화 (나중에 저장된 데이터 불러오기로 대체해야 함)
-        _currentGold = 0;
-        _dailyEarnedGold = 0;
+        _currentGold = PlayerPrefs.GetInt(GOLD_KEY, 0); 
+        _dailyEarnedGold = PlayerPrefs.GetInt(DAILY_GOLD_KEY, 0); 
         
         Debug.Log($"GameManager 초기화 완료. 현재 Gold: {_currentGold}, 일일 획득량: {_dailyEarnedGold}");
     }
@@ -69,5 +72,14 @@ public class GameManager : MonoBehaviour
         Debug.Log($"Gold 획득 성공 (+{goldToAdd}). 현재 누적: {_dailyEarnedGold}/{mMaxDailyGold}");
         
         // TODO: UI 업데이트 로직 호출
+    }
+    
+    private void OnApplicationQuit() 
+    {
+        PlayerPrefs.SetInt(GOLD_KEY, _currentGold);
+        PlayerPrefs.SetInt(DAILY_GOLD_KEY, _dailyEarnedGold);
+        
+        PlayerPrefs.Save(); 
+        Debug.Log("데이터 PlayerPrefs에 저장 완료.");
     }
 }
