@@ -1,3 +1,5 @@
+using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -7,6 +9,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int mMaxDailyGold = 2000;
     
     [SerializeField] private GoldPresenter mGoldPresenter; 
+    
+    [SerializeField] private float mAutoSaveInterval = 30f;
     
     public int GoldPerClick => mGoldPerClick; 
     public int MaxDailyGold => mMaxDailyGold;
@@ -33,11 +37,40 @@ public class GameManager : MonoBehaviour
         InitializeGameData();
     }
 
+    private void Start()
+    {
+        StartCoroutine(AutoSaveRoutine());
+    }
+    
+    private void SaveGameData()
+    {
+        PlayerPrefs.SetInt(GOLD_KEY, _currentGold);
+        PlayerPrefs.SetInt(DAILY_GOLD_KEY, _dailyEarnedGold);
+        PlayerPrefs.Save(); 
+            
+        Debug.Log("자동 저장 완료.");
+    }
+    
+    IEnumerator AutoSaveRoutine()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(mAutoSaveInterval);
+            SaveGameData();
+        }
+    }
+
     private void InitializeGameData()
     {
         // TODO :: 임시 초기화 (나중에 저장된 데이터 불러오기로 대체해야 함)
         _currentGold = PlayerPrefs.GetInt(GOLD_KEY, 0); 
         _dailyEarnedGold = PlayerPrefs.GetInt(DAILY_GOLD_KEY, 0); 
+        
+        if (mGoldPresenter != null)
+        {
+            mGoldPresenter.UpdateGoldText(_currentGold);
+            mGoldPresenter.UpdateDailyLimitText(_dailyEarnedGold, mMaxDailyGold);
+        }
         
         Debug.Log($"GameManager 초기화 완료. 현재 Gold: {_currentGold}, 일일 획득량: {_dailyEarnedGold}");
     }
@@ -74,12 +107,8 @@ public class GameManager : MonoBehaviour
         // TODO: UI 업데이트 로직 호출
     }
     
-    private void OnApplicationQuit() 
+    private void OnApplicationQuit()
     {
-        PlayerPrefs.SetInt(GOLD_KEY, _currentGold);
-        PlayerPrefs.SetInt(DAILY_GOLD_KEY, _dailyEarnedGold);
-        
-        PlayerPrefs.Save(); 
-        Debug.Log("데이터 PlayerPrefs에 저장 완료.");
+        SaveGameData();
     }
 }
