@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -8,6 +9,10 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int mMaxDailyGold = 2000;
     
     [SerializeField] private GoldPresenter mGoldPresenter;
+    
+    [Header("UI 참조")]
+    [SerializeField] private GameObject mGoldPopUpPrefab;
+    [SerializeField] private RectTransform mCanvasRectTransform;
     
     public int GoldPerClick => mGoldPerClick;
     public int MaxDailyGold => mMaxDailyGold;
@@ -65,7 +70,7 @@ public class GameManager : MonoBehaviour
 
         Debug.Log($"GameManager 초기화 완료. 현재 Gold: {_currentGold}, 일일 획득량: {_dailyEarnedGold}");
     }
-    public void AddGold()
+    public void AddGold(Vector2 clickPosition)
     {
         bool isAtLimit = _dailyEarnedGold >= mMaxDailyGold;
 
@@ -90,6 +95,33 @@ public class GameManager : MonoBehaviour
         {
             mGoldPresenter.UpdateGoldText(_currentGold);
             mGoldPresenter.UpdateDailyLimitText(_dailyEarnedGold, mMaxDailyGold);
+        }
+        
+        if (mGoldPopUpPrefab != null && mCanvasRectTransform != null)
+        {
+            GameObject popupObj = Instantiate(mGoldPopUpPrefab, mCanvasRectTransform.transform); 
+                
+            RectTransform rectTransform = popupObj.GetComponent<RectTransform>();
+
+            if (rectTransform != null)
+            {
+                Vector2 localPoint;
+                    
+                if (RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                        mCanvasRectTransform,
+                        clickPosition, 
+                        null, 
+                        out localPoint))
+                {
+                    rectTransform.localPosition = localPoint;
+                }
+            }
+            
+            ClickEffect popUpEffect = popupObj.GetComponent<ClickEffect>();
+            if (popUpEffect != null)
+            {
+                popUpEffect.SetText(goldToAdd);
+            }
         }
 
         Debug.Log($"Gold 획득 성공 (+{goldToAdd}). 현재 누적: {_dailyEarnedGold}/{mMaxDailyGold}");

@@ -17,7 +17,7 @@ public class Clicker : MonoBehaviour, IPointerDownHandler
     
     public void OnPointerDown(PointerEventData eventData)
     {
-        GameManager.Instance.AddGold();
+        GameManager.Instance.AddGold(eventData.position);
         
         // TODO: 클릭 애니메이션 재생 (백덤블링 등)
         
