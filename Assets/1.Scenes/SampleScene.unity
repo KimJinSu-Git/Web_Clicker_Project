@@ -620,9 +620,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mGoldPerClick: 1
-  mMaxDailyGold: 30
+  mMaxDailyGold: 500
   mGoldPresenter: {fileID: 1095671876}
-  mAutoSaveInterval: 30
 --- !u!1 &906975820
 GameObject:
   m_ObjectHideFlags: 0
